@@ -34,7 +34,4 @@ public class UserPosMap {
     public void addPos(String user, Position p){
         tab.get(user).add(p);
     }
-
-
-
 }

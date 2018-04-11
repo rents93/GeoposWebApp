@@ -1,7 +1,6 @@
 package com.myServlet;
 
 import com.positionWebApp.UserPosMap;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,6 +31,8 @@ public class LoginServlet extends HttpServlet {
         username = request.getParameter("username");
         password = request.getParameter("password");
 
+        System.out.println("Arrivata post su login" + username + password);
+
         if (username == null || password == null || username.isEmpty() || password.isEmpty() ) {
             response.setStatus(401);
         } else {
@@ -45,7 +46,9 @@ public class LoginServlet extends HttpServlet {
                 if (s.equals(searchStr)) {
                     //Credenziali corrette
                     request.getSession().setAttribute("username", username);
-                    response.sendRedirect("positions.html");
+//                    da scommentare per interfaccia web
+//                    ritora automaticamente 200 al client
+//                    response.sendRedirect("positions.html");
                     b = true;
                 }
             }
