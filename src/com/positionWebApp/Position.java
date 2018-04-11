@@ -9,6 +9,7 @@ public class Position {
         this.latitude = lat;
         this.longitude = lon;
         this.timestamp = ts;
+        /*ciao*/
     }
 
     public double getLatitude() {
