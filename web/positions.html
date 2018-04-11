@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+</head>
+<body>
+<h1>Insert a position</h1>
+<form action="/positions" method="post">
+    Latitude: <input type = "text" name = "latitude">
+    <br />
+    Longitude: <input type = "text" name = "longitude" />
+    <input type = "submit" value = "Submit" />
+</form>
+
+<form action="/positions" method="get">
+    First <input type = "number" name = "n_pos"> position
+    <input type = "submit" value = "Show" />
+    <br>
+</form>
+
+<form action="/logout" method="post">
+    <input type = "submit" value = "Logout" />
+</form>
+
+</body>
+</html>
