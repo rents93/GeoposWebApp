@@ -19,6 +19,9 @@ public class UserPosMap {
 
     public List<Position> getPositions(String user, int n_pos){
         List<Position> ret = new ArrayList<>();
+        if (!userIsPresent(user)){
+            return ret;
+        }
 
         Iterator itr = tab.get(user).iterator();
         for(int i=n_pos; i>0 && itr.hasNext(); i--) {

@@ -6,6 +6,7 @@ import com.positionWebApp.UserPosMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static java.lang.Double.parseDouble;
 
-//@WebServlet("/positions")
+@WebServlet("/positions")
 public class AddPosServlet extends HttpServlet {
     private double latD;
     private double lonD;
@@ -85,7 +86,7 @@ public class AddPosServlet extends HttpServlet {
         String n_pos = req.getParameter("n_pos");
         String user = req.getSession().getAttribute("username").toString();
         PrintWriter out = resp.getWriter();
-        out.println("Richieste " + n_pos + " posizioni di " + user + " dimensione tab relativa " + UserPosMap.tab.get(user).size());
+        out.println("Richieste " + n_pos + " posizioni di " + user + " dimensione tab relativa ");
 
         List<Position> lista = tab.getPositions(user, Integer.parseInt(n_pos) );
         ObjectMapper mapper = new ObjectMapper();
