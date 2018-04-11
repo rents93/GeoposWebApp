@@ -22,6 +22,8 @@ public class LoginFilter extends HttpFilter {
             resp.sendRedirect("login.html");
         else
             chain.doFilter(req, resp);
+
+        //ciao
     }
 
     public void destroy(){
