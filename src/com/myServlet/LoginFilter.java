@@ -20,7 +20,7 @@ public class LoginFilter extends HttpFilter {
     public void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
 
         if (req.getSession().getAttribute("username") == null)
-            resp.sendRedirect("login.html");
+            resp.setStatus(403);
         else
             chain.doFilter(req, resp);
 

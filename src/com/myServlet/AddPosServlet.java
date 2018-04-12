@@ -1,6 +1,7 @@
 package com.myServlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.positionWebApp.Account;
 import com.positionWebApp.Position;
 import com.positionWebApp.UserPosMap;
 
@@ -12,18 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.List;
+import java.util.Scanner;
 
 import static java.lang.Double.parseDouble;
 
 @WebServlet("/positions")
 public class AddPosServlet extends HttpServlet {
-    private double latD;
-    private double lonD;
-    private long tsL;
-    private String latS;
-    private String lonS;
-    private String tsS;
+    private double lat;
+    private double lon;
+    private long ts;
+    private static ObjectMapper mapper = new ObjectMapper();
 
     protected static UserPosMap tab=new UserPosMap();
 
@@ -35,19 +36,25 @@ public class AddPosServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
 
-        latS=request.getParameter("latitude");
-        lonS=request.getParameter("longitude");
 
-        if(latS==null || lonS==null){
+        System.out.println("Arrivata post su postiions");
+
+        Reader r=request.getReader();
+        Scanner scanner=new Scanner(r);
+        String s=scanner.nextLine();
+        Position p = mapper.readValue(s, Position.class);
+
+        lat = p.getLatitude();
+        lon = p.getLongitude();
+        ts = p.getTimestamp();
+
+        if(lat==null || lon==null){
             //manca un valore
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty field");
         }
         else{
             //creo oggetto posizione
-            latD=parseDouble(latS);
-            lonD=parseDouble(lonS);
-            tsL=System.currentTimeMillis();
-            Position p = new Position(latD,lonD,tsL);
+            Position p = new Position(lat,lon,ts);
 
             //valido coordinate
             if(p.hasValidCoord()){
