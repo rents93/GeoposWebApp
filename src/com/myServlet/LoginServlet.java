@@ -1,7 +1,8 @@
 package com.myServlet;
 
-import com.positionWebApp.UserPosMap;
-import javax.servlet.RequestDispatcher;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.positionWebApp.Account;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.Scanner;
 
 @WebServlet("/login")
@@ -17,6 +18,7 @@ public class LoginServlet extends HttpServlet {
 
     private String username;
     private String password;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void init(){
@@ -28,10 +30,18 @@ public class LoginServlet extends HttpServlet {
 
         String s;
         boolean b = false;
-        username = request.getParameter("username");
-        password = request.getParameter("password");
 
-        System.out.println("Arrivata post su login" + username + password);
+        System.out.println("Arrivata post");
+
+        Reader r=request.getReader();
+        Scanner scanner=new Scanner(r);
+        s=scanner.nextLine();
+        Account account = mapper.readValue(s, Account.class);
+
+        String username = account.getUsername();
+        String password = account.getPassword();
+
+        System.out.println("Arrivata post su login " + username + " " + password);
 
         if (username == null || password == null || username.isEmpty() || password.isEmpty() ) {
             response.setStatus(401);
@@ -53,7 +63,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
             if (!b)
-                response.setStatus(401);
+                response.setStatus(403);
         }
     }
 
