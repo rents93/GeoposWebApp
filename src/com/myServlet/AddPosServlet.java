@@ -37,7 +37,7 @@ public class AddPosServlet extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
 
-        System.out.println("Arrivata post su postiions");
+        System.out.println("Arrivata post su positions");
 
         Reader r=request.getReader();
         Scanner scanner=new Scanner(r);
@@ -48,42 +48,33 @@ public class AddPosServlet extends HttpServlet {
         lon = p.getLongitude();
         ts = p.getTimestamp();
 
-        if(lat==null || lon==null){
-            //manca un valore
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty field");
-        }
-        else{
-            //creo oggetto posizione
-            Position p = new Position(lat,lon,ts);
+        //valido coordinate
+        if(p.hasValidCoord()){
+            //coordinate corrette
 
-            //valido coordinate
-            if(p.hasValidCoord()){
-                //coordinate corrette
+            //controllo se esiste user e aggiungo la posizione, se valida
+            String currUser=request.getSession().getAttribute("username").toString();
 
-                //controllo se esiste user e aggiungo la posizione, se valida
-                String currUser=request.getSession().getAttribute("username").toString();
-
-                if(tab.userIsPresent(currUser)){
-                    //confronto con ultima posizione
+            if(tab.userIsPresent(currUser)){
+                //confronto con ultima posizione
 //                    if(p.isValidPos(tab.getLastPos(currUser))) {
 //                        //posizione valida
-                        tab.addPos(currUser, p);
+                    tab.addPos(currUser, p);
 //                    }
 //
 //                    else
 //                        //posizione non valida rispetto a quella precedente
 //                        redirectMessage(request, response, "<font color=red>Posizione non valida rispetto a quella precedente</font>");
-                }
-                else{
-                    //utente da aggiungere alla lista
-                    tab.addUser(currUser);
-                    tab.addPos(currUser, p);
-                }
             }
             else{
-                //coordinate non valide
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid coordinates");
+                //utente da aggiungere alla lista
+                tab.addUser(currUser);
+                tab.addPos(currUser, p);
             }
+        }
+        else{
+            //coordinate non valide
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameters");
         }
     }
 
