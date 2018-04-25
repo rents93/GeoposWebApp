@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
         String s;
         boolean b = false;
 
-        System.out.println("Arrivata post");
+//        System.out.println("Arrivata post");
 
         Reader r=request.getReader();
         Scanner scanner=new Scanner(r);
@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
         System.out.println("Arrivata post su login " + username + " " + password);
 
         if (username == null || password == null || username.isEmpty() || password.isEmpty() ) {
-            response.setStatus(401);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             //controllo se le credenziali sono valide
             String searchStr = username + ":" + password;
@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
             if (!b)
-                response.setStatus(403);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 

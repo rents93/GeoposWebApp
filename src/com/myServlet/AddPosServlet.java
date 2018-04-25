@@ -14,19 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.Double.parseDouble;
-
 @WebServlet("/positions")
 public class AddPosServlet extends HttpServlet {
-    private double lat;
-    private double lon;
-    private long ts;
-    private static ObjectMapper mapper = new ObjectMapper();
 
-    protected static UserPosMap tab=new UserPosMap();
+    private static ObjectMapper mapper = new ObjectMapper();
+    protected static UserPosMap tab = UserPosMap.getUserPosMap();
 
     @Override
     public void init(){
@@ -37,53 +34,43 @@ public class AddPosServlet extends HttpServlet {
                           HttpServletResponse response) throws ServletException, IOException {
 
 
-        System.out.println("Arrivata post su postiions");
+        System.out.println("Arrivata post su positions");
+        List<Position> positions = new ArrayList<>();
 
         Reader r=request.getReader();
         Scanner scanner=new Scanner(r);
-        String s=scanner.nextLine();
-        Position p = mapper.readValue(s, Position.class);
-
-        lat = p.getLatitude();
-        lon = p.getLongitude();
-        ts = p.getTimestamp();
-
-        if(lat==null || lon==null){
-            //manca un valore
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty field");
+        String s;
+        while (scanner.hasNextLine()){
+            s=scanner.nextLine();
+            try {
+                positions = Arrays.asList(mapper.readValue(s, Position[].class));
+            } catch (Exception e){
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong format input, unable to parse json");
+            }
         }
-        else{
-            //creo oggetto posizione
-            Position p = new Position(lat,lon,ts);
 
+        for (Position p : positions){
             //valido coordinate
             if(p.hasValidCoord()){
-                //coordinate corrette
-
-                //controllo se esiste user e aggiungo la posizione, se valida
                 String currUser=request.getSession().getAttribute("username").toString();
-
                 if(tab.userIsPresent(currUser)){
                     //confronto con ultima posizione
-//                    if(p.isValidPos(tab.getLastPos(currUser))) {
-//                        //posizione valida
+                    if(p.isValidPos(tab.getLastPos(currUser)))
                         tab.addPos(currUser, p);
-//                    }
-//
-//                    else
-//                        //posizione non valida rispetto a quella precedente
-//                        redirectMessage(request, response, "<font color=red>Posizione non valida rispetto a quella precedente</font>");
-                }
-                else{
+                    else
+                        ;
+//                        non faccio nulla, semplicemente non viene inserita
+//                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "At least one positions doesn't respect velocity constraint");
+                } else {
                     //utente da aggiungere alla lista
                     tab.addUser(currUser);
                     tab.addPos(currUser, p);
                 }
-            }
-            else{
-                //coordinate non valide
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid coordinates");
-            }
+            } else
+                ;
+//                coordinate non valide
+//                non faccio nulla, semplicemente non viene inserita
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid coordinates");
         }
     }
 
@@ -93,7 +80,7 @@ public class AddPosServlet extends HttpServlet {
         String n_pos = req.getParameter("n_pos");
         String user = req.getSession().getAttribute("username").toString();
         PrintWriter out = resp.getWriter();
-        out.println("Richieste " + n_pos + " posizioni di " + user + " dimensione tab relativa ");
+//        out.println("Richieste " + n_pos + " posizioni di " + user + " dimensione tab relativa ");
 
         List<Position> lista = tab.getPositions(user, Integer.parseInt(n_pos) );
         ObjectMapper mapper = new ObjectMapper();

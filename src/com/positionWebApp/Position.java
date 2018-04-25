@@ -5,12 +5,12 @@ public class Position {
     private double longitude;
     private long timestamp;
 
+    public Position() {}
+
     public Position(double lat, double lon, long ts){
         this.latitude = lat;
         this.longitude = lon;
         this.timestamp = ts;
-        /*ciao*/
-        /*ciao*/
     }
 
     public double getLatitude() {

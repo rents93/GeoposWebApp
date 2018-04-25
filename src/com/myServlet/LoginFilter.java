@@ -20,14 +20,11 @@ public class LoginFilter extends HttpFilter {
     public void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
 
         if (req.getSession().getAttribute("username") == null)
-            resp.setStatus(403);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         else
             chain.doFilter(req, resp);
-
-        //ciao
     }
 
     public void destroy(){
-
     }
 }
