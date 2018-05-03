@@ -27,6 +27,7 @@ public class LoginServlet extends HttpServlet {
     private String username;
     private String password;
     private ObjectMapper mapper = new ObjectMapper();
+    private DbFunction dbFunction = DbFunction.getDbFunction();
 
     @Override
     public void init(){
@@ -55,34 +56,35 @@ public class LoginServlet extends HttpServlet {
         if (username.isEmpty() || password.isEmpty() ) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            /*//controllo se le credenziali sono valide
-            String searchStr = username + ":" + password;
-
-            //apertura file
-            Scanner scan = new Scanner(new File(
-                    request.getServletContext().getRealPath("WEB-INF/users.txt"))
-            );
-            //ricerca credenziali nel file
-            while (scan.hasNext()) {
-                s = scan.nextLine();
-                if (s.equals(searchStr)) {
-                    //Credenziali corrette
-                    request.getSession().setAttribute("username", username);
-                    b = true;
-                }
-            }*/
-
-            ///occhio al nome tabella---------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            query="select count (*) as num from USER where username='"+username+"'and password='"+password+"'";
-            rs=DBQuery.doQuery(query);
-
-            try {
-                if(rs.getInt("num")==1){
-                    b=true;
-                }
-            } catch (SQLException e) {
-                System.out.println("Errore query ricerca user nel db");
-            }
+//            //controllo se le credenziali sono valide
+//            String searchStr = username + ":" + password;
+//
+//            //apertura file
+//            Scanner scan = new Scanner(new File(
+//                    request.getServletContext().getRealPath("WEB-INF/users.txt"))
+//            );
+//            //ricerca credenziali nel file
+//            while (scan.hasNext()) {
+//                s = scan.nextLine();
+//                if (s.equals(searchStr)) {
+//                    //Credenziali corrette
+//                    request.getSession().setAttribute("username", username);
+//                    b = true;
+//                }
+//            }
+//
+//            ///occhio al nome tabella---------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//            query="select count (*) as num from USER where username='"+username+"'and password='"+password+"'";
+//            rs=DBQuery.doQuery(query);
+//
+//            try {
+//                if(rs.getInt("num")==1){
+//                    b=true;
+//                }
+//            } catch (SQLException e) {
+//                System.out.println("Errore query ricerca user nel db");
+//            }
+            dbFunction.checkCredentials(username, password);
 
 
             if (!b)

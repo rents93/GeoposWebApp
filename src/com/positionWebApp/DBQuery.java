@@ -5,12 +5,14 @@ import java.sql.*;
 public class DBQuery {
     static private Connection conn;
 
-    static public void driverInit() throws ClassNotFoundException{
-        Class.forName("com.mysql.jdbc.Driver");
-    }
+//    LkF viene fatto nel listener
+//    static public void driverInit() throws ClassNotFoundException{
+//        Class.forName("com.mysql.jdbc.Driver");
+//    }
 
     static public void connect() throws SQLException{
-        conn=DriverManager.getConnection("............","anton", "gruppo8");
+        String DBUrl = "jdbc:postgresql:database";
+        conn=DriverManager.getConnection(DBUrl,"anton", "gruppo8");
     }
 
     static public ResultSet doQuery(String str){
