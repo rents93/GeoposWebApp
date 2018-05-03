@@ -36,6 +36,7 @@ public class AddPosServlet extends HttpServlet {
 
         System.out.println("Arrivata post su positions");
         List<Position> positions = new ArrayList<>();
+        DbFunction db= new DbFunction();
 
         Reader r=request.getReader();
         Scanner scanner=new Scanner(r);
@@ -56,7 +57,8 @@ public class AddPosServlet extends HttpServlet {
                 if(tab.userIsPresent(currUser)){
                     //confronto con ultima posizione
                     if(p.isValidPos(tab.getLastPos(currUser)))
-                        tab.addPos(currUser, p);
+                        db.insertPosition(p,currUser);
+                       // tab.addPos(currUser, p);
                     else
                         ;
 //                        non faccio nulla, semplicemente non viene inserita

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 @WebServlet("/login")
@@ -20,10 +23,14 @@ public class LoginServlet extends HttpServlet {
     private String password;
     private ObjectMapper mapper = new ObjectMapper();
 
+
     @Override
     public void init(){
         // Do required initialization
     }
+
+
+
 
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
