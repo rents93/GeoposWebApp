@@ -3,8 +3,10 @@ package com.myServlet;
 import com.positionWebApp.Position;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.sql.*;
+import java.util.List;
 
 public class DbFunction {
 
@@ -18,6 +20,7 @@ public class DbFunction {
     public static DbFunction getDbFunction(){
         return dbfunction;
     }
+
 
     private Connection connect() throws SQLException {
         return DriverManager.getConnection(url, user, password);
@@ -98,5 +101,33 @@ public class DbFunction {
             }
         }
         return false;
+    }
+
+    public List<Position> getPositions(String user, int n_pos) {
+
+        String n= String.valueOf(n_pos);
+        String SQL = "SELECT * FROM POSITION WHERE userID='"+user+"' limit "+n;
+
+        try{
+            Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(SQL);
+            // display actor information
+
+                List<Position> lista=new ArrayList<>();
+                while(rs.next()) {
+                    Position p = new Position();
+                    p.setLatitude(rs.getDouble("lat"));
+                    p.setLongitude(rs.getDouble("lon"));
+                    p.setTimestamp(rs.getLong("timestamp"));
+                    lista.add(p);}
+
+                    return lista;
+
+            }catch(SQLException ex){
+                throw new RuntimeException(ex);
+
+            }
+
     }
 }

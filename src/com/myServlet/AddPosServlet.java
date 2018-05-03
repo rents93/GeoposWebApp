@@ -1,7 +1,6 @@
 package com.myServlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.positionWebApp.Account;
 import com.positionWebApp.DBQuery;
 import com.positionWebApp.Position;
 import com.positionWebApp.UserPosMap;
@@ -17,10 +16,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @WebServlet("/positions")
 public class AddPosServlet extends HttpServlet {
@@ -130,17 +126,20 @@ public class AddPosServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         //da interfaccia web
-        String n_pos = req.getParameter("n_pos");
+        DbFunction db= new DbFunction();
+        int n_pos = Integer.parseInt(req.getParameter("n_pos"));
         String user = req.getSession().getAttribute("username").toString();
         PrintWriter out = resp.getWriter();
 //        out.println("Richieste " + n_pos + " posizioni di " + user + " dimensione tab relativa ");
 
-        List<Position> lista = tab.getPositions(user, Integer.parseInt(n_pos) );
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(resp.getWriter(), lista);
+        List<Position> lista=db.getPositions(user,n_pos);
+
+        ObjectMapper mapper=new ObjectMapper();
+        mapper.writeValue(resp.getWriter(),lista);
         resp.setContentType("application/json");
+
     }
 
     private void redirectMessage(HttpServletRequest request, HttpServletResponse response, String s)
