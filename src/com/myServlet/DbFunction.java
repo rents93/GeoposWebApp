@@ -104,30 +104,36 @@ public class DbFunction {
     }
 
     public List<Position> getPositions(String user, int n_pos) {
-
+        PreparedStatement ps = null;
+        List<Position> lista=null;
         String n= String.valueOf(n_pos);
-        String SQL = "SELECT * FROM POSITION WHERE userID='"+user+"' limit "+n;
+        String SQL = "SELECT * FROM POSITION WHERE userID='?' limit ?";
 
         try{
             Connection conn = connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL);
-            // display actor information
+            ps = conn.prepareStatement(SQL);
+            ps.setString(1, user);
+            ps.setString(2, String.valueOf(n_pos) );
+            ResultSet rs = ps.executeQuery(SQL);
 
-                List<Position> lista=new ArrayList<>();
-                while(rs.next()) {
-                    Position p = new Position();
-                    p.setLatitude(rs.getDouble("lat"));
-                    p.setLongitude(rs.getDouble("lon"));
-                    p.setTimestamp(rs.getLong("timestamp"));
-                    lista.add(p);}
-
-                    return lista;
-
-            }catch(SQLException ex){
-                throw new RuntimeException(ex);
-
+            lista=new ArrayList<>();
+            while(rs.next()) {
+                Position p = new Position();
+                p.setLatitude(rs.getDouble("lat"));
+                p.setLongitude(rs.getDouble("lon"));
+                p.setTimestamp(rs.getLong("timestamp"));
+                lista.add(p);
             }
-
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            try {
+                if (ps!=null)
+                    ps.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return lista;
     }
 }
